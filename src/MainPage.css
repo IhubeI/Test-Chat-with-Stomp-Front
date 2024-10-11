@@ -1,0 +1,51 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .header {
+    font-size: 2rem;
+    color: #343a40;
+  }
+  
+  .user-info {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-list-header {
+    font-size: 1.5rem;
+    color: #495057;
+    margin-bottom: 10px;
+  }
+  
+  .user-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .user-item {
+    background-color: #e9ecef;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .user-item:hover {
+    background-color: #ced4da;
+  }
+  
