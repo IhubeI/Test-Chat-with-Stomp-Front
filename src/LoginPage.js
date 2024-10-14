@@ -1,9 +1,7 @@
-// LoginPage.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // React Router의 useNavigate 훅을 가져옵니다.
-import './LoginPage.css'; // CSS 파일 가져오기
-
+import './LoginPage.css'; // CSS 파일 임포트
 const LoginPage = () => {
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수 생성
 
@@ -68,79 +66,86 @@ const LoginPage = () => {
     }
   };
 
-  return (<>
-    <div className="login-container">
-      <h1>로그인 페이지</h1>
-      <div className="input-group">
-        <input
-          type="text"
-          name="userId"
-          placeholder="사용자 ID"
-          value={loginData.userId}
-          onChange={handleLoginChange}
-          onKeyDown={handleKeyDown} // Enter 키 이벤트 처리
-        />
-      </div>
-      <div className="input-group">
-        <input
-          type="password"
-          name="password"
-          placeholder="비밀번호"
-          value={loginData.password}
-          onChange={handleLoginChange}
-          onKeyDown={handleKeyDown} // Enter 키 이벤트 처리
-        />
-      </div>
-      <button onClick={handleLogin}>로그인</button>
-      <button onClick={() => setModalOpen(true)}>회원가입</button> {/* 회원가입 버튼 */}
-
-      {message && <p>{message}</p>}
-
-      {isModalOpen && (
-        <div className="modal">
-          <h2>회원가입</h2>
-          <div className="input-group">
-            <input
-              type="text"
-              name="userId"
-              placeholder="사용자 ID"
-              value={formData.userId}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="input-group">
-            <input
-              type="password"
-              name="userPassword"
-              placeholder="비밀번호"
-              value={formData.userPassword}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="input-group">
-            <input
-              type="text"
-              name="userName"
-              placeholder="사용자 이름"
-              value={formData.userName}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="input-group">
-            <input
-              type="email"
-              name="email"
-              placeholder="이메일"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-          <button onClick={handleSignUp}>회원가입</button>
-          <button onClick={() => setModalOpen(false)}>닫기</button>
+  return (
+    <>
+      <div className="login-container">
+        <h1>로그인 페이지</h1>
+        <div className="input-group">
+          <input
+            type="text"
+            name="userId"
+            placeholder="사용자 ID"
+            value={loginData.userId}
+            onChange={handleLoginChange}
+            onKeyDown={handleKeyDown} // Enter 키 이벤트 처리
+            className="login-input"
+          />
         </div>
-      )}
-    </div>
-  </>
+        <div className="input-group">
+          <input
+            type="password"
+            name="password"
+            placeholder="비밀번호"
+            value={loginData.password}
+            onChange={handleLoginChange}
+            onKeyDown={handleKeyDown} // Enter 키 이벤트 처리
+            className="login-input"
+          />
+        </div>
+        <button onClick={handleLogin} className="login-button">로그인</button>
+        <button onClick={() => setModalOpen(true)} className="signup-button">회원가입</button> {/* 회원가입 버튼 */}
+
+        {message && <p className="login-message">{message}</p>}
+
+        {isModalOpen && (
+          <div className="modal">
+            <h2>회원가입</h2>
+            <div className="input-group">
+              <input
+                type="text"
+                name="userId"
+                placeholder="사용자 ID"
+                value={formData.userId}
+                onChange={handleChange}
+                className="signup-input"
+              />
+            </div>
+            <div className="input-group">
+              <input
+                type="password"
+                name="userPassword"
+                placeholder="비밀번호"
+                value={formData.userPassword}
+                onChange={handleChange}
+                className="signup-input"
+              />
+            </div>
+            <div className="input-group">
+              <input
+                type="text"
+                name="userName"
+                placeholder="사용자 이름"
+                value={formData.userName}
+                onChange={handleChange}
+                className="signup-input"
+              />
+            </div>
+            <div className="input-group">
+              <input
+                type="email"
+                name="email"
+                placeholder="이메일"
+                value={formData.email}
+                onChange={handleChange}
+                className="signup-input"
+              />
+            </div>
+            <button onClick={handleSignUp} className="signup-submit">회원가입</button>
+            <button onClick={() => setModalOpen(false)} className="modal-close">닫기</button>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
