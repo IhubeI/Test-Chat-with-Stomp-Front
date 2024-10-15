@@ -20,6 +20,7 @@ const App = () => {
         <Route path="/main" element={<MainPage />} />
         <Route path="/test/:receiverId" element={<ChatComponent />} />
       </Route>
+      
 
 
       {/* 페이지가 없으면 보여줄 페이지 - 404 Not Found */}

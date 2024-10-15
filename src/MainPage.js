@@ -1,14 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userAtom } from './recoil/userAtom'; // userAtom import
 import axios from 'axios'; // axios for API calls
 import './MainPage.css'; // Import the CSS file
 import { NavLink } from 'react-router-dom';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
 
 const MainPage = () => {
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const user = useRecoilValue(userAtom); // Recoil 상태에서 사용자 정보 가져오기
   const [userList, setUserList] = useState([]); // 사용자 목록 상태 관리
+  const [userAList, setUserAList] = useState([]);
 
+
+
+
+
+
+  // WebSocket 서버에 연결하는 함수
+  const connectToServer = useCallback(() => {
+    const client = Stomp.over(() => new SockJS(`${baseURL}/stomp/chat`));
+
+    client.connect({}, (frame) => {
+
+      // 사용자 목록 구독
+      client.subscribe(`/sub/users`, (message) => {
+        const json = JSON.parse(message.body);
+        setUserAList(Array.from(json));
+      });
+    }, (error) => {
+      console.error('Connection error: ', error); // 연결 오류 처리
+    });
+
+    return client; // client 반환
+  }, [baseURL]);
+
+  //useEffect
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -20,7 +48,17 @@ const MainPage = () => {
     };
 
     fetchUsers(); // 컴포넌트가 마운트될 때 사용자 목록 가져오기
+    if (user === null) return;
+    const client = connectToServer();
+    // 컴포넌트 언마운트 시 연결 해제
+    return () => {
+      if (client) {
+        client.disconnect();
+      }
+    };
   }, []); // 빈 배열을 의존성으로 하여 한 번만 실행
+
+
 
   return (
     <div className="main-container">
@@ -46,6 +84,15 @@ const MainPage = () => {
       ) : (
         <p>사용자가 없습니다.</p>
       )}
+      {/* 사용자 목록 */}
+      <h2 className="user-list-header">현재 사용자 목록</h2>
+      <ul className="user-list">
+        {userAList.map((user, index) => (
+          <li className="user-item" key={index}>
+            {user === user.userId ? user + "(나)" : user}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

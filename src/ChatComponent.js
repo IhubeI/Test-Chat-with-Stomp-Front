@@ -6,6 +6,7 @@ import { userAtom } from './recoil/userAtom';
 import './ChatComponent.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import moment from 'moment'; // Moment.js 임포트
 
 const ChatComponent = () => {
     const { receiverId } = useParams(); // URL에서 receiverId 가져오기
@@ -15,6 +16,7 @@ const ChatComponent = () => {
     const [inputMessage, setInputMessage] = useState(''); // 입력 메시지 상태
     const [chatRoomId, setChatRoomId] = useState(null); // 방번호 상태 추가
     const [hasFetchedMessages, setHasFetchedMessages] = useState(false); // 메시지 불러오기 상태 추가
+    const [currentTimestamp, setCurrentTimestamp] = useState(null); // 현재 시간 상태 추가
     const baseURL = process.env.REACT_APP_BASE_URL;
 
     const navigate = useNavigate();
@@ -22,30 +24,14 @@ const ChatComponent = () => {
     // 시간관련 function 1
     const formatTimestamp = (timestamp) => {
         if (!timestamp) {
-            const now = new Date();
-            return formatDate(now);
+            // 타임스탬프가 없을 때 저장된 현재 시간 반환
+            return currentTimestamp ? moment(currentTimestamp).format('YYYY-MM-DD A hh:mm:ss') : '타임스탬프 없음';
         }
 
-        const date = new Date(timestamp);
-        return formatDate(date);
+        return moment(timestamp).format('YYYY-MM-DD A hh:mm:ss'); // Moment.js로 포맷팅
     };
 
-    // 시간관련 function 의 옵션-프론트에 보여질 형식 설정
-    const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-
-        const amPm = hours < 12 ? '오전' : '오후';
-        const formattedHours = hours % 12 || 12;
-
-        return `${year}-${month}-${day} ${amPm} ${String(formattedHours).padStart(2, '0')}:${minutes}:${seconds}`;
-    };
-
-    //CallBack
+    // CallBack
     // 채팅방 존재 여부 확인
     const checkChatRoomExists = useCallback(async () => {
         try {
@@ -115,8 +101,7 @@ const ChatComponent = () => {
         } catch (error) {
             console.error('메시지 불러오기 중 오류:', error);
         }
-    }, [baseURL, chatRoomId, hasFetchedMessages]);
-
+    }, [baseURL, chatRoomId]);
 
     // 메세지 전송
     const sendMessage = () => {
@@ -132,23 +117,25 @@ const ChatComponent = () => {
         }
     };
 
-    //엔터키 관련
+    // 엔터키 관련
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             sendMessage();
         }
     };
 
-    //Effect
+    // Effect
     useEffect(() => {
         const initChatRoom = async () => {
-
             const exists = await checkChatRoomExists();
             if (!exists) {
                 // 채팅방이 존재하지 않을 경우 생성
                 await createChatRoom();
-            } else {
-                //존재하면 아무것도 안함
+            }
+
+            // 현재 시간을 한 번만 가져와서 저장
+            if (!currentTimestamp) {
+                setCurrentTimestamp(Date.now());
             }
 
             // 이제 채팅방 ID가 설정되면 메시지를 불러오고 연결
@@ -166,7 +153,7 @@ const ChatComponent = () => {
             }
         };
 
-    }, [checkChatRoomExists, createChatRoom, chatRoomId, connect]);
+    }, [checkChatRoomExists, createChatRoom, chatRoomId, connect, currentTimestamp]);
 
     return (
         <div className="chat-container">
