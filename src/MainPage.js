@@ -56,7 +56,7 @@ const MainPage = () => {
         client.disconnect();
       }
     };
-  }, []); // 빈 배열을 의존성으로 하여 한 번만 실행
+  }, [user, baseURL]); // 빈 배열을 의존성으로 하여 한 번만 실행
 
 
 
@@ -77,7 +77,7 @@ const MainPage = () => {
         <ul className="user-list">
           {userList.map((user) => (
             <li key={user.userId} className="user-item">
-              ID: <NavLink to={`/test/${user.userId}`} >{user.userId}</NavLink>
+              ID: {user.userId}
             </li>
           ))}
         </ul>
@@ -87,13 +87,17 @@ const MainPage = () => {
       {/* 사용자 목록 */}
       <h2 className="user-list-header">현재 사용자 목록</h2>
       <ul className="user-list">
-        {userAList.map((user, index) => (
+        {userAList.map((userNow, index) => (
           <li className="user-item" key={index}>
-            {user === user.userId ? user + "(나)" : user}
+            {userNow === user.userId ? userNow + " (나)" :
+              <NavLink to={`/test/${userNow}`} >
+                {userNow}
+              </NavLink>
+            }
           </li>
         ))}
       </ul>
-    </div>
+    </div >
   );
 };
 

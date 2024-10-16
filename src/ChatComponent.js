@@ -24,10 +24,8 @@ const ChatComponent = () => {
     // 시간관련 function 1
     const formatTimestamp = (timestamp) => {
         if (!timestamp) {
-            // 타임스탬프가 없을 때 저장된 현재 시간 반환
-            return currentTimestamp ? moment(currentTimestamp).format('YYYY-MM-DD A hh:mm:ss') : '타임스탬프 없음';
+            return '타임스탬프 없음';
         }
-
         return moment(timestamp).format('YYYY-MM-DD A hh:mm:ss'); // Moment.js로 포맷팅
     };
 
@@ -133,11 +131,6 @@ const ChatComponent = () => {
                 await createChatRoom();
             }
 
-            // 현재 시간을 한 번만 가져와서 저장
-            if (!currentTimestamp) {
-                setCurrentTimestamp(Date.now());
-            }
-
             // 이제 채팅방 ID가 설정되면 메시지를 불러오고 연결
             if (chatRoomId) {
                 fetchMessages();
@@ -153,7 +146,7 @@ const ChatComponent = () => {
             }
         };
 
-    }, [checkChatRoomExists, createChatRoom, chatRoomId, connect, currentTimestamp]);
+    }, [checkChatRoomExists, createChatRoom, chatRoomId, connect]);
 
     return (
         <div className="chat-container">
@@ -161,6 +154,9 @@ const ChatComponent = () => {
             <div className="connection">
                 {user.userId}님 환영합니다!
             </div> {/* 연결 상태 표시 */}
+            <div className="custom-button">
+                더보기
+            </div>
             <div className="message-container">
                 {messages.map((msg, index) => (
                     <div key={index} className={msg.senderId === user.userId ? 'my-message' : 'other-message'}>
